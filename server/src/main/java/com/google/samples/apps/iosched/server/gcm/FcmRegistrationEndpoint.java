@@ -16,9 +16,6 @@
 
 package com.google.samples.apps.iosched.server.gcm;
 
-import static com.googlecode.objectify.ObjectifyService.ofy;
-
-import com.google.api.client.repackaged.com.google.common.base.Strings;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -32,6 +29,10 @@ import com.google.samples.apps.iosched.server.gcm.db.DeviceStore;
 import com.google.samples.apps.iosched.server.gcm.db.models.Device;
 import com.google.samples.apps.iosched.server.userdata.Ids;
 import com.googlecode.objectify.NotFoundException;
+
+import org.apache.http.util.TextUtils;
+
+import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
  * Endpoint for registering and un-registering devices with FCM tokens.
@@ -73,14 +74,14 @@ public class FcmRegistrationEndpoint {
       throws BadRequestException {
 
     // Check to see if deviceId.
-    if (Strings.isNullOrEmpty(deviceId)) {
+    if (TextUtils.isEmpty(deviceId)) {
       // Drop request.
       throw new BadRequestException("Invalid request: Request must contain " +
           PARAMETER_DEVICE_ID);
     }
 
     // Check that user making requests is non null.
-    if (user != null && !Strings.isNullOrEmpty(user.getId())) {
+    if (user != null && !TextUtils.isEmpty(user.getId())) {
       DeviceStore.register(deviceId, user.getId());
     } else {
       // If user is null still register device so it can still get session update ping.
@@ -103,7 +104,7 @@ public class FcmRegistrationEndpoint {
       com.google.api.server.spi.response.NotFoundException, ForbiddenException {
 
     // Check to see if deviceId.
-    if (Strings.isNullOrEmpty(deviceId)) {
+    if (TextUtils.isEmpty(deviceId)) {
       // Drop request.
       throw new BadRequestException("Invalid request: Request must contain " +
           PARAMETER_DEVICE_ID);
